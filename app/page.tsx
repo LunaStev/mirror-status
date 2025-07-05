@@ -29,6 +29,21 @@ const mirrors: MirrorServer[] = [
     },
 ]
 
+const countryCodeMap: Record<string, string> = {
+    'India': 'in',
+    'South Korea': 'kr',
+    'United States': 'us',
+    'Germany': 'de',
+    'France': 'fr',
+    'Japan': 'jp',
+    'China': 'cn',
+    'Brazil': 'br',
+}
+
+const getFlagUrl = (countryName: string): string | null => {
+    const code = countryCodeMap[countryName]
+    return code ? `https://flagcdn.com/24x18/${code}.png` : null
+}
 
 export default function Home() {
     const [clientTime, setClientTime] = useState('')
@@ -104,7 +119,16 @@ export default function Home() {
                                 {status.ip && <p><strong>IP Address:</strong> {status.ip}</p>}
                                 <p><strong>Host Name:</strong> {mirror.hostname}</p>
                                 {status.city && status.country && (
-                                    <p><strong>Location:</strong> {status.city}, {status.country}</p>
+                                    <p>
+                                        <strong>Location:</strong> {status.city}, {status.country}{' '}
+                                        {getFlagUrl(status.country) && (
+                                            <img
+                                                src={getFlagUrl(status.country)!}
+                                                alt={`${status.country} flag`}
+                                                style={{ width: '24px', height: '18px', verticalAlign: 'middle', marginLeft: '4px' }}
+                                            />
+                                        )}
+                                    </p>
                                 )}
                                 {status.org && <p><strong>ISP:</strong> {status.org}</p>}
                                 {status.error && <p className="error"><strong>Error:</strong> {status.error}</p>}
