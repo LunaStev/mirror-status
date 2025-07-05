@@ -29,17 +29,6 @@ const mirrors: MirrorServer[] = [
     },
 ]
 
-const countryCodeMap: Record<string, string> = {
-    'India': 'in',
-    'South Korea': 'kr',
-    'United States': 'us',
-    'Germany': 'de',
-    'France': 'fr',
-    'Japan': 'jp',
-    'China': 'cn',
-    'Brazil': 'br',
-}
-
 const getFlagUrl = (countryCode: string): string => {
     return `https://flagcdn.com/24x18/${countryCode.toLowerCase()}.png`
 }
