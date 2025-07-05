@@ -40,9 +40,8 @@ const countryCodeMap: Record<string, string> = {
     'Brazil': 'br',
 }
 
-const getFlagUrl = (countryName: string): string | null => {
-    const code = countryCodeMap[countryName]
-    return code ? `https://flagcdn.com/24x18/${code}.png` : null
+const getFlagUrl = (countryCode: string): string => {
+    return `https://flagcdn.com/24x18/${countryCode.toLowerCase()}.png`
 }
 
 export default function Home() {
@@ -121,13 +120,11 @@ export default function Home() {
                                 {status.city && status.country && (
                                     <p>
                                         <strong>Location:</strong> {status.city}, {status.country}{' '}
-                                        {getFlagUrl(status.country) && (
-                                            <img
-                                                src={getFlagUrl(status.country)!}
-                                                alt={`${status.country} flag`}
-                                                style={{ width: '24px', height: '18px', verticalAlign: 'middle', marginLeft: '4px' }}
-                                            />
-                                        )}
+                                        <img
+                                            src={getFlagUrl(status.country)}
+                                            alt={`${status.country} flag`}
+                                            style={{ width: '24px', height: '18px', verticalAlign: 'middle', marginLeft: '4px' }}
+                                        />
                                     </p>
                                 )}
                                 {status.org && <p><strong>ISP:</strong> {status.org}</p>}
