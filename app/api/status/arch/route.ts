@@ -6,7 +6,7 @@ export async function GET() {
 
     try {
         const start = Date.now()
-        const res = await fetch(target, { method: 'HEAD', cache: 'no-store' })
+        const res = await fetch(target, { method: 'GET', cache: 'no-store' })
         const latency = Date.now() - start
 
         const locationRes = await fetch(ipinfo)
@@ -20,7 +20,11 @@ export async function GET() {
             country: location.country,
             org: location.org,
             loc: location.loc,
-            hostname: location.hostname,
+            hostname: 'arch.mirror.lunastev.org',
+        }, {
+            headers: {
+                'Access-Control-Allow-Origin': '*'
+            }
         })
     } catch (e) {
         return NextResponse.json({
