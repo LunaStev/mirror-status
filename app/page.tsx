@@ -8,6 +8,9 @@ type ServerStatus = {
     ip?: string
     city?: string
     country?: string
+    region?: string
+    timezone?: string
+    postal?: string
     org?: string
     hostname?: string
     error?: string
@@ -57,7 +60,7 @@ export default function Home() {
     return (
         <main id="container">
             <div className="header">
-                <h1>Mirror Server Status</h1>
+                <h1>arch.mirror.lunastev.org</h1>
                 <div className="time-info">
                     <p><strong>Client Time:</strong> {clientTime}</p>
                     <p><strong>Server Time:</strong> {serverTime}</p>
@@ -65,15 +68,58 @@ export default function Home() {
             </div>
 
             <div className="status-info">
-                <p><strong>Status:</strong> {status.online ? 'Online' : 'Offline'}</p>
-                {status.latency !== undefined && <p><strong>Response Speed:</strong> {status.latency} ms</p>}
-                {status.ip && <p><strong>IP Address:</strong> {status.ip}</p>}
-                {status.hostname && <p><strong>Host Name:</strong> {status.hostname}</p>}
-                {status.city && status.country && (
-                    <p><strong>Location:</strong> {status.city}, {status.country}</p>
+                <p>
+                    <strong>Status:</strong> {status.online ? 'Online 🟢' : 'Offline 🔴'}
+                </p>
+
+                {status.latency !== undefined && (
+                    <p>
+                        <strong>Response Speed:</strong> {status.latency} ms ⚡️
+                    </p>
                 )}
-                {status.org && <p><strong>ISP:</strong> {status.org}</p>}
-                {status.error && <p className="error"><strong>Error:</strong> {status.error}</p>}
+
+                {status.ip && (
+                    <p>
+                        <strong>IP Address:</strong> {status.ip} 📡
+                    </p>
+                )}
+
+                {status.hostname && (
+                    <p>
+                        <strong>Host Name:</strong> {status.hostname} 🖥️
+                    </p>
+                )}
+
+                {(status.city || status.region || status.country) && (
+                    <p>
+                        <strong>Location:</strong>{' '}
+                        {[status.city, status.region, status.country].filter(Boolean).join(', ')} 📍
+                    </p>
+                )}
+
+                {status.postal && (
+                    <p>
+                        <strong>Postal Code:</strong> {status.postal} ✉️
+                    </p>
+                )}
+
+                {status.timezone && (
+                    <p>
+                        <strong>Time Zone:</strong> {status.timezone} 🌐
+                    </p>
+                )}
+
+                {status.org && (
+                    <p>
+                        <strong>ISP/Organization:</strong> {status.org} 🏢
+                    </p>
+                )}
+
+                {status.error && (
+                    <p className="error">
+                        <strong>Error:</strong> {status.error} ⚠️
+                    </p>
+                )}
             </div>
         </main>
     )
