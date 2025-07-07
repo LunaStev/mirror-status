@@ -114,10 +114,10 @@ export default function Home() {
                 <ComposableMap projection="geoEqualEarth" projectionConfig={{ scale: 170 }}>
                     {geographies.length > 0 && (
                         <Geographies geography={geographies}>
-                            {({ geographies }) =>
+                            {({ geographies }: { geographies: Feature[] }) =>
                                 geographies.map((geo) => (
                                     <Geography
-                                        key={geo.rsmKey}
+                                        key={geo.id || geo.rsmKey}
                                         geography={geo}
                                         fill="#1f1f1f"
                                         stroke="#00d4ff"
