@@ -1,6 +1,15 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import {
+    ComposableMap,
+    Geographies,
+    Geography,
+    Marker
+} from 'react-simple-maps'
+import { feature } from 'topojson-client'
+
+const geoUrl = 'https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json'
 
 type ServerStatus = {
     online: boolean
@@ -11,6 +20,7 @@ type ServerStatus = {
     org?: string
     hostname?: string
     error?: string
+    loc?: string
 }
 
 type MirrorServer = {
@@ -36,10 +46,19 @@ const getFlagUrl = (countryCode: string): string => {
 export default function Home() {
     const [clientTime, setClientTime] = useState('')
     const clientTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone
-
     const [statuses, setStatuses] = useState<Record<string, ServerStatus | null>>({})
+    const [geographies, setGeographies] = useState<any[]>([])
 
     useEffect(() => {
+        // Load map data
+        fetch(geoUrl)
+            .then((res) => res.json())
+            .then((data) => {
+                const geo = feature(data, data.objects.countries).features
+                setGeographies(geo)
+            })
+
+        // Fetch mirror status
         mirrors.forEach((mirror) => {
             fetch(mirror.apiEndpoint)
                 .then((res) => res.json())
@@ -54,6 +73,7 @@ export default function Home() {
                 })
         })
 
+        // Client time update
         const updateClientTime = () => {
             const now = new Date().toLocaleString('en-US', {
                 hour12: false,
@@ -88,6 +108,53 @@ export default function Home() {
                 </div>
             </div>
 
+            <div className="map-wrapper">
+                <ComposableMap projection="geoEqualEarth" projectionConfig={{ scale: 170 }}>
+                    {geographies.length > 0 && (
+                        <Geographies geography={geographies}>
+                            {({ geographies }) =>
+                                geographies.map((geo) => (
+                                    <Geography
+                                        key={geo.rsmKey}
+                                        geography={geo}
+                                        fill="#1f1f1f"
+                                        stroke="#00d4ff"
+                                        strokeWidth={0.3}
+                                        style={{
+                                            default: { outline: 'none' },
+                                            hover: { fill: '#2a2a2a' },
+                                            pressed: { fill: '#111' },
+                                        }}
+                                    />
+                                ))
+                            }
+                        </Geographies>
+                    )}
+
+                    {mirrors.map((mirror) => {
+                        const status = statuses[mirror.name]
+                        if (!status || !status.loc) return null
+
+                        const [latStr, lonStr] = status.loc.split(',')
+                        const latitude = parseFloat(latStr)
+                        const longitude = parseFloat(lonStr)
+
+                        return (
+                            <Marker key={mirror.name} coordinates={[longitude, latitude]}>
+                                <circle r={6} fill="#00d4ff" stroke="#ffffff" strokeWidth={1.5} />
+                                <text
+                                    textAnchor="middle"
+                                    y={-12}
+                                    style={{ fill: '#f0f2f5', fontSize: '0.65rem' }}
+                                >
+                                    {mirror.name}
+                                </text>
+                            </Marker>
+                        )
+                    })}
+                </ComposableMap>
+            </div>
+
             {mirrors.map((mirror) => {
                 const status = statuses[mirror.name]
 
@@ -112,7 +179,12 @@ export default function Home() {
                                         <img
                                             src={getFlagUrl(status.country)}
                                             alt={`${status.country} flag`}
-                                            style={{ width: '24px', height: '18px', verticalAlign: 'middle', marginLeft: '4px' }}
+                                            style={{
+                                                width: '24px',
+                                                height: '18px',
+                                                verticalAlign: 'middle',
+                                                marginLeft: '4px'
+                                            }}
                                         />
                                     </p>
                                 )}
