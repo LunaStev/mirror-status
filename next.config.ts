@@ -1,7 +1,10 @@
 import type { NextConfig } from "next";
 
-const nextConfig: NextConfig = {
-    domains: ['flagcdn.com'],
-};
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+    images: {
+        domains: ['flagcdn.com'],
+    },
+}
 
-export default nextConfig;
+export default nextConfig
