@@ -117,7 +117,7 @@ export default function Home() {
                             {({ geographies }: { geographies: Feature[] }) =>
                                 geographies.map((geo) => (
                                     <Geography
-                                        key={geo.id || geo.rsmKey}
+                                        key={(geo as any).rsmKey}
                                         geography={geo}
                                         fill="#1f1f1f"
                                         stroke="#00d4ff"
