@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import Image from 'next/image'
 import {
     ComposableMap,
     Geographies,
@@ -8,6 +9,7 @@ import {
     Marker
 } from 'react-simple-maps'
 import { feature } from 'topojson-client'
+import type { Feature } from 'geojson'
 
 const geoUrl = 'https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json'
 
@@ -47,7 +49,7 @@ export default function Home() {
     const [clientTime, setClientTime] = useState('')
     const clientTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone
     const [statuses, setStatuses] = useState<Record<string, ServerStatus | null>>({})
-    const [geographies, setGeographies] = useState<any[]>([])
+    const [geographies, setGeographies] = useState<Feature[]>([])
 
     useEffect(() => {
         // Load map data
@@ -176,12 +178,12 @@ export default function Home() {
                                 {status.city && status.country && (
                                     <p>
                                         <strong>Location:</strong> {status.city}, {status.country}{' '}
-                                        <img
+                                        <Image
                                             src={getFlagUrl(status.country)}
                                             alt={`${status.country} flag`}
+                                            width={24}
+                                            height={18}
                                             style={{
-                                                width: '24px',
-                                                height: '18px',
                                                 verticalAlign: 'middle',
                                                 marginLeft: '4px'
                                             }}

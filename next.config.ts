@@ -1,7 +1,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+    domains: ['flagcdn.com'],
 };
 
 export default nextConfig;
