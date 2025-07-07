@@ -45,6 +45,8 @@ const getFlagUrl = (countryCode: string): string => {
     return `https://flagcdn.com/24x18/${countryCode.toLowerCase()}.png`
 }
 
+type GeoWithRSMKey = Feature & { rsmKey: string }
+
 export default function Home() {
     const [clientTime, setClientTime] = useState('')
     const clientTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone
@@ -115,10 +117,13 @@ export default function Home() {
                     {geographies.length > 0 && (
                         <Geographies geography={geographies}>
                             {({ geographies }: { geographies: Feature[] }) =>
-                                geographies.map((geo) => (
+                            {geographies.map((geo) => {
+                                const typedGeo = geo as GeoWithRSMKey
+
+                                return (
                                     <Geography
-                                        key={(geo as any).rsmKey}
-                                        geography={geo}
+                                        key={typedGeo.rsmKey}
+                                        geography={typedGeo}
                                         fill="#1f1f1f"
                                         stroke="#00d4ff"
                                         strokeWidth={0.3}
@@ -128,7 +133,8 @@ export default function Home() {
                                             pressed: { fill: '#111' },
                                         }}
                                     />
-                                ))
+                                )
+                            })}
                             }
                         </Geographies>
                     )}
